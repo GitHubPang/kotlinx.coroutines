@@ -92,10 +92,10 @@ class IntegrationTest(
         assertEquals(1, pub.awaitFirstOrDefault(0))
         assertEquals(1, pub.awaitFirstOrNull())
         assertEquals(1, pub.awaitFirstOrElse { 0 })
+        assertEquals(null, pub.awaitSingleOrNull())
         assertEquals(n, pub.awaitLast())
         assertFailsWith<IllegalArgumentException> { pub.awaitSingle() }
         assertFailsWith<IllegalArgumentException> { pub.awaitSingleOrDefault(0) }
-        assertFailsWith<IllegalArgumentException> { pub.awaitSingleOrNull() }
         assertFailsWith<IllegalArgumentException> { pub.awaitSingleOrElse { 0 } }
         checkNumbers(n, pub)
         val channel = pub.openSubscription()
