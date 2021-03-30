@@ -33,7 +33,7 @@ import org.reactivestreams.FlowAdapters
  * @throws IllegalArgumentException if the provided [context] contains a [Job] instance.
  */
 @ExperimentalCoroutinesApi
-public fun <T> flowPublish(
+public fun <T : Any> flowPublish(
     context: CoroutineContext = EmptyCoroutineContext,
     @BuilderInference block: suspend ProducerScope<T>.() -> Unit
 ): Flow.Publisher<T> = FlowAdapters.toFlowPublisher(publish(context, block))

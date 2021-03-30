@@ -37,7 +37,7 @@ import kotlin.internal.*
  * @throws IllegalArgumentException if the provided [context] contains a [Job] instance.
  */
 @ExperimentalCoroutinesApi
-public fun <T> publish(
+public fun <T : Any> publish(
     context: CoroutineContext = EmptyCoroutineContext,
     @BuilderInference block: suspend ProducerScope<T>.() -> Unit
 ): Publisher<T> {
