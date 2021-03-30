@@ -116,7 +116,7 @@ class IntegrationTest(
     }
 
     @Test
-    fun testEmptySingle() = runTest(unhandled = listOf({e -> e is NoSuchElementException})) {
+    fun testEmptySingle() = runTest(unhandled = listOf { e -> e is NoSuchElementException }) {
         expect(1)
         val job = launch(Job(), start = CoroutineStart.UNDISPATCHED) {
             publish<String> {

@@ -11,10 +11,10 @@ import kotlinx.coroutines.internal.*
 import org.reactivestreams.*
 
 /**
- * Subscribes to this [Publisher] and returns a channel to receive elements emitted by it.
- * The resulting channel shall be [cancelled][ReceiveChannel.cancel] to unsubscribe from this publisher.
+ * Subscribes to this [Publisher] and returns a channel to receive the elements emitted by it.
+ * The resulting channel needs to be [cancelled][ReceiveChannel.cancel] in order to unsubscribe from this publisher.
 
- * @param request how many items to request from publisher in advance (optional, one by default).
+ * @param request how many items to request from the publisher in advance (optional, a single element by default).
  *
  * This method is deprecated in the favor of [Flow].
  * Instead of iterating over the resulting channel please use [collect][Flow.collect]:
@@ -40,7 +40,9 @@ public suspend inline fun <T> Publisher<T>.consumeEach(action: (T) -> Unit): Uni
 
 /**
  * Subscribes to this [Publisher] and performs the specified action for each received element.
- * Cancels subscription if any exception happens during collect.
+ *
+ * If [action] throws an exception at some point, the subscription is cancelled, and the exception is rethrown from
+ * [collect]. Also, if the publisher signals an error, that error is rethrown from [collect].
  */
 public suspend inline fun <T> Publisher<T>.collect(action: (T) -> Unit): Unit =
     openSubscription().consumeEach(action)
@@ -59,7 +61,7 @@ private class SubscriptionChannel<T>(
     // can be negative if we have receivers, but no subscription yet
     private val _requested = atomic(0)
 
-    // AbstractChannel overrides
+    // --------------------- AbstractChannel overrides -------------------------------
     @Suppress("CANNOT_OVERRIDE_INVISIBLE_MEMBER")
     override fun onReceiveEnqueued() {
         _requested.loop { wasRequested ->
@@ -87,7 +89,7 @@ private class SubscriptionChannel<T>(
         _subscription.getAndSet(null)?.cancel() // cancel exactly once
     }
 
-    // Subscriber overrides
+    // --------------------- Subscriber overrides -------------------------------
     override fun onSubscribe(s: Subscription) {
         _subscription.value = s
         while (true) { // lock-free loop on _requested
