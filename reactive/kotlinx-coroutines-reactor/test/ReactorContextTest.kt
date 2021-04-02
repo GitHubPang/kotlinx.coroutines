@@ -58,7 +58,7 @@ class ReactorContextTest : TestBase() {
     }
 
     @Test
-    fun testFluxAwaitContextPropagation() = runBlocking<Unit>(
+    fun testFluxAwaitContextPropagation() = runBlocking(
         Context.of(1, "1", 2, "2", 3, "3").asCoroutineContext()
     ) {
         assertEquals(createFlux().awaitFirst(), "1")
