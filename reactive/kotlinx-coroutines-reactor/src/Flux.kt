@@ -35,7 +35,7 @@ import kotlin.internal.*
  * @throws IllegalArgumentException if the provided [context] contains a [Job] instance.
  */
 @ExperimentalCoroutinesApi
-public fun <T> flux(
+public fun <T : Any> flux(
     context: CoroutineContext = EmptyCoroutineContext,
     @BuilderInference block: suspend ProducerScope<T>.() -> Unit
 ): Flux<T> {
